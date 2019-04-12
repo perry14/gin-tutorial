@@ -7,9 +7,16 @@ import (
 )
 
 func main() {
-	r := gin.Default()
+	router := gin.Default()
+	router.Static("/static", "static")
+	router.LoadHTMLGlob("templates/*")
+	router.GET("/index", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"title": "JSONP TEST",
+		})
+	})
 
-	r.GET("/JSONP", func(c *gin.Context) {
+	router.GET("/JSONP", func(c *gin.Context) {
 		data := map[string]interface{}{
 			"foo": "bar",
 		}
@@ -18,5 +25,5 @@ func main() {
 		c.JSONP(http.StatusOK, data)
 	})
 
-	r.Run(":8080")
+	router.Run(":8080")
 }
